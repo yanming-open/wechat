@@ -56,3 +56,118 @@ func (this *Mp) GetUserInfo(openid string) (u *User, err error) {
 		}
 	}
 }
+
+// 设置用户备注名
+func (m *Mp) UpdateUserRemark(openid, remark string) (err error) {
+	url := fmt.Sprintf("%suser/info/updateremark?access_token=%s&lang=zh_CN", wxApiHost, m.accessToken)
+	params := utils.KV{}
+	params["openid"] = openid
+	params["remark"] = remark
+	buf, err := utils.DoPost(url, params)
+	if err != nil {
+		return
+	} else {
+		var bizResp = common.BizResponse{}
+		err = json.Unmarshal(buf, &bizResp)
+		if err != nil {
+			return
+		} else {
+			if bizResp.ErrCode != 0 {
+				return errors.New(bizResp.ErrMsg)
+			}
+		}
+	}
+	return
+}
+
+// 获取用户列表
+func (m *Mp) GetUserList(nextOpenId string) (response UserListResponse, err error) {
+	url := fmt.Sprintf("%suser/get?access_token=%s&next_openid=%s", wxApiHost, m.accessToken, nextOpenId)
+	buf, err := utils.DoGet(url)
+	if err != nil {
+		logger.Error(err.Error())
+		return
+	} else {
+		err = json.Unmarshal(buf, &response)
+		if err != nil {
+			logger.Error(err.Error())
+			return
+		} else {
+			if response.ErrCode != 0 {
+				return response, errors.New(response.ErrMsg)
+			}
+		}
+	}
+	return
+}
+
+// 黑名单用户列表
+func (m *Mp) GetBlackUserList(nextOpenId string) (response UserListResponse, err error) {
+	url := fmt.Sprintf("%stags/members/getblacklist?access_token=%s", wxApiHost, m.accessToken)
+	params := utils.KV{}
+	params["begin_openid"] = nextOpenId
+	buf, err := utils.DoPost(url, params)
+	if err != nil {
+		logger.Error(err.Error())
+		return
+	} else {
+		err = json.Unmarshal(buf, &response)
+		if err != nil {
+			logger.Error(err.Error())
+			return
+		} else {
+			if response.ErrCode != 0 {
+				return response, errors.New(response.ErrMsg)
+			}
+		}
+	}
+	return
+}
+
+// 批量拉黑用户
+func (m *Mp) BatchBlackUser(openIds []string) (err error) {
+	url := fmt.Sprintf("%stags/members/batchblacklist?access_token=%s", wxApiHost, m.accessToken)
+	params := utils.KV{}
+	params["openid_list"] = openIds
+	buf, err := utils.DoPost(url, params)
+	if err != nil {
+		logger.Error(err.Error())
+		return
+	} else {
+		var bizResp = common.BizResponse{}
+		err = json.Unmarshal(buf, &bizResp)
+		if err != nil {
+			logger.Error(err.Error())
+			return
+		} else {
+			if bizResp.ErrCode != 0 {
+				return errors.New(bizResp.ErrMsg)
+			}
+		}
+	}
+	return
+}
+
+// 批量取消拉黑用户
+func (m *Mp) BatchUnBlackUser(openIds []string) (err error) {
+	url := fmt.Sprintf("%stags/members/batchunblacklist?access_token=%s", wxApiHost, m.accessToken)
+	params := utils.KV{}
+	params["openid_list"] = openIds
+	buf, err := utils.DoPost(url, params)
+	if err != nil {
+		logger.Error(err.Error())
+		return
+	} else {
+		var bizResp = common.BizResponse{}
+		err = json.Unmarshal(buf, &bizResp)
+		if err != nil {
+			logger.Error(err.Error())
+			return
+		} else {
+			if bizResp.ErrCode != 0 {
+				return errors.New(bizResp.ErrMsg)
+			}
+		}
+	}
+	return
+}

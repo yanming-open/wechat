@@ -35,3 +35,13 @@ type TagUsersResponse struct {
 	} `json:"data"`
 	NextOpenId string `json:"next_openid"`
 }
+
+type UserListResponse struct {
+	common.BizResponse
+	Total int `json:"total"`
+	Count int `json:"count"`
+	Data  struct {
+		OpenId []string `json:"openid"`
+	} `json:"data"`
+	NextOpenId string `json:"next_openid"`
+}

@@ -62,8 +62,8 @@ func (biz *BizMessage) DecryptMsg(encryptStr string, mp *Mp) error {
 		var length int32
 		binary.Read(buf, binary.BigEndian, &length)
 		appIDstart := 20 + length
-		id := plainData[appIDstart : int(appIDstart)+len(mp.AppId)]
-		if string(id) != mp.AppId {
+		id := plainData[appIDstart : int(appIDstart)+len(mp.appid)]
+		if string(id) != mp.appid {
 			return errors.New("appid　is invalid")
 		}
 		biz.MessageContent = plainData[20 : 20+length]

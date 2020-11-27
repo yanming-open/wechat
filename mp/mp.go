@@ -16,10 +16,10 @@ var logger *zap.Logger
 const wxApiHost = "https://api.weixin.qq.com/cgi-bin/" // 微信接口服务器地址
 
 type Mp struct {
-	Token          string
-	EncodingAESKey string
-	AppId          string
-	AppSecret      string
+	token          string
+	encodingaeskey string
+	appid          string
+	appsecret      string
 	aeskey         []byte
 	accessToken    string
 }
@@ -27,7 +27,7 @@ type Mp struct {
 // 实例化一个公众号接口实例，同一服务中只要实例化一个即可
 // accesstoken 会自动刷新，初次调用需要注意先等待accesstoken请求完成
 func NewMp(token, encodingaeskey, appid, appsecret string) *Mp {
-	var mp = Mp{Token: token, EncodingAESKey: encodingaeskey, AppId: appid, AppSecret: appsecret}
+	var mp = Mp{token: token, encodingaeskey: encodingaeskey, appid: appid, appsecret: appsecret}
 	mp.initMp()
 	return &mp
 }
@@ -51,7 +51,7 @@ func (mp *Mp) initMp() {
 	)
 	logger = zap.New(core)
 	defer logger.Sync()
-	mp.aeskey = encodingAESKey2AESKey(mp.EncodingAESKey)
+	mp.aeskey = encodingAESKey2AESKey(mp.encodingaeskey)
 	go timerTicketToken(mp)
 }
 
@@ -61,7 +61,7 @@ func (mp *Mp) initMp() {
 // @return data TokenResponse "返回结果"
 // @return error error "返回错误"
 func getAccessToken(mp *Mp) (tokenResponse, error) {
-	url := fmt.Sprintf("%stoken?grant_type=client_credential&appid=%s&secret=%s", wxApiHost, mp.AppId, mp.AppSecret)
+	url := fmt.Sprintf("%stoken?grant_type=client_credential&appid=%s&secret=%s", wxApiHost, mp.appid, mp.appsecret)
 	buf, err := utils.DoGet(url)
 	var result tokenResponse
 	if err != nil {
