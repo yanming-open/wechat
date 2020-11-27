@@ -106,10 +106,10 @@ func (this *ReplyMusicMessage) PassiveReply(c *gin.Context) {
 }
 
 type Article struct {
-	Title       string `xml:",cdata"` // 图文消息标题
-	Description string `xml:",cdata"` // 图文消息描述
-	PicUrl      string `xml:",cdata"` // 图片链接，支持JPG、PNG格式，较好的效果为大图360*200，小图200*200
-	Url         string `xml:",cdata"` // 点击图文消息跳转链接
+	Title       common.CDATA // 图文消息标题
+	Description common.CDATA // 图文消息描述
+	PicUrl      common.CDATA // 图片链接，支持JPG、PNG格式，较好的效果为大图360*200，小图200*200
+	Url         common.CDATA // 点击图文消息跳转链接
 }
 
 type ReplyNewsMessage struct {

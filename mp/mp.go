@@ -47,7 +47,7 @@ func (mp *Mp) initMp() {
 		zapcore.NewMultiWriteSyncer(
 			zapcore.AddSync(os.Stdout),
 			zapcore.AddSync(hook)), // 打印到控制台和文件
-		zap.InfoLevel, // 日志级别
+		zap.InfoLevel,              // 日志级别
 	)
 	logger = zap.New(core)
 	defer logger.Sync()
@@ -60,10 +60,10 @@ func (mp *Mp) initMp() {
 // @auth
 // @return data TokenResponse "返回结果"
 // @return error error "返回错误"
-func getAccessToken(mp *Mp) (TokenResponse, error) {
+func getAccessToken(mp *Mp) (tokenResponse, error) {
 	url := fmt.Sprintf("%stoken?grant_type=client_credential&appid=%s&secret=%s", wxApiHost, mp.AppId, mp.AppSecret)
 	buf, err := utils.DoGet(url)
-	var result TokenResponse
+	var result tokenResponse
 	if err != nil {
 		return result, err
 	} else {
@@ -73,7 +73,7 @@ func getAccessToken(mp *Mp) (TokenResponse, error) {
 }
 
 func timerTicketToken(mp *Mp) {
-	var result TokenResponse
+	var result tokenResponse
 	var err error
 	for {
 		result, err = getAccessToken(mp)

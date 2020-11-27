@@ -7,10 +7,10 @@ import (
 )
 
 const (
-	QR_SCENE           = "QR_SCENE"           // 临时的整型参数值
-	QR_STR_SCENE       = "QR_STR_SCENE"       // 临时的字符串参数值
-	QR_LIMIT_SCENE     = "QR_LIMIT_SCENE"     // 永久的整型参数值
-	QR_LIMIT_STR_SCENE = "QR_LIMIT_STR_SCENE" // 永久的字符串参数值
+	qrScene         = "QR_SCENE"           // 临时的整型参数值
+	qrStrScene      = "QR_STR_SCENE"       // 临时的字符串参数值
+	qrLimitScene    = "QR_LIMIT_SCENE"     // 永久的整型参数值
+	qrLimitStrScene = "QR_LIMIT_STR_SCENE" // 永久的字符串参数值
 )
 
 // 二维码生成接口
@@ -40,16 +40,16 @@ type QrCode struct {
 }
 
 // 创建临时二维码
-func (this *Mp) CreateQrCode(expire int, sceneinfo interface{})(qc *QrCode) {
+func (this *Mp) CreateQrCode(expire int, sceneinfo interface{}) (qc *QrCode) {
 	url := fmt.Sprintf("%sqrcode/create?access_token=%s", wxApiHost, this.accessToken)
 	var request = qrCodeRequest{}
 	switch sceneinfo.(type) {
 	case int:
-		request.ActionName = QR_SCENE
+		request.ActionName = qrScene
 		request.ActionInfo.Scene.SceneId = sceneinfo.(int)
 		break
 	case string:
-		request.ActionName = QR_STR_SCENE
+		request.ActionName = qrStrScene
 		request.ActionInfo.Scene.SceneStr = sceneinfo.(string)
 		break
 	}
@@ -65,22 +65,22 @@ func (this *Mp) CreateQrCode(expire int, sceneinfo interface{})(qc *QrCode) {
 		logger.Error(err.Error())
 	}
 	json.Unmarshal(body, &qc)
-	qc.Url = fmt.Sprintf("%sshowqrcode?ticket=%s", wxApiHost,qc.Ticket)
-	qc.ShortUrl = long2short(qc.Url,this.accessToken)
+	qc.Url = fmt.Sprintf("%sshowqrcode?ticket=%s", wxApiHost, qc.Ticket)
+	qc.ShortUrl = long2short(qc.Url, this.accessToken)
 	return qc
 }
 
 // 创建永久二维码
-func (this *Mp) CreateLimitQrCode(sceneinfo interface{})(qc *QrCode) {
+func (this *Mp) CreateLimitQrCode(sceneinfo interface{}) (qc *QrCode) {
 	url := fmt.Sprintf("%sqrcode/create?access_token=%s", wxApiHost, this.accessToken)
 	var request = qrCodeRequest{}
 	switch sceneinfo.(type) {
 	case int:
-		request.ActionName = QR_LIMIT_SCENE
+		request.ActionName = qrLimitScene
 		request.ActionInfo.Scene.SceneId = sceneinfo.(int)
 		break
 	case string:
-		request.ActionName = QR_LIMIT_STR_SCENE
+		request.ActionName = qrLimitStrScene
 		request.ActionInfo.Scene.SceneStr = sceneinfo.(string)
 		break
 	}
@@ -95,7 +95,7 @@ func (this *Mp) CreateLimitQrCode(sceneinfo interface{})(qc *QrCode) {
 		logger.Error(err.Error())
 	}
 	json.Unmarshal(body, &qc)
-	qc.Url = fmt.Sprintf("%sshowqrcode?ticket=%s", wxApiHost,qc.Ticket)
-	qc.ShortUrl = long2short(qc.Url,this.accessToken)
+	qc.Url = fmt.Sprintf("%sshowqrcode?ticket=%s", wxApiHost, qc.Ticket)
+	qc.ShortUrl = long2short(qc.Url, this.accessToken)
 	return qc
 }
