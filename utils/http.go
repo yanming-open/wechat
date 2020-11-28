@@ -3,13 +3,17 @@ package utils
 import (
 	"bytes"
 	"encoding/json"
+	"io"
 	"io/ioutil"
+	"mime/multipart"
 	"net/http"
+	"os"
 	"time"
 )
 
 type KV map[string]interface{}
 
+//
 func DoGet(url string) ([]byte, error) {
 	client := http.Client{Timeout: time.Second * 15}
 	req, _ := http.NewRequest("GET", url, nil)
@@ -26,6 +30,8 @@ func DoGet(url string) ([]byte, error) {
 		}
 	}
 }
+
+//
 func DoPost(url string, params KV) ([]byte, error) {
 	bytesData, err := json.Marshal(params)
 	if err != nil {
@@ -46,4 +52,33 @@ func DoPost(url string, params KV) ([]byte, error) {
 			return body, nil
 		}
 	}
+}
+
+//
+func DoUpload(url, filePath string) (body []byte, err error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return
+	}
+	defer file.Close()
+	bodyBuf := &bytes.Buffer{}
+	bodyWriter := multipart.NewWriter(bodyBuf)
+	fileWriter, err := bodyWriter.CreateFormFile("media", filePath)
+	if err != nil {
+		return
+	}
+	_, err = io.Copy(fileWriter, file)
+	if err != nil {
+		return
+	}
+	contentType := bodyWriter.FormDataContentType()
+	bodyWriter.Close()
+	var resp *http.Response
+	resp, err = http.Post(url, contentType, bodyBuf)
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+	body, err = ioutil.ReadAll(resp.Body)
+	return
 }

@@ -45,3 +45,10 @@ type UserListResponse struct {
 	} `json:"data"`
 	NextOpenId string `json:"next_openid"`
 }
+
+type MediaResponse struct {
+	common.BizResponse
+	Type      string `json:"type"`
+	MediaId   string `json:"media_id"`
+	CreatedAt int    `json:"created_at"`
+}
