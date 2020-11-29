@@ -52,3 +52,9 @@ type MediaResponse struct {
 	MediaId   string `json:"media_id"`
 	CreatedAt int    `json:"created_at"`
 }
+
+type MaterialResponse struct {
+	common.BizResponse
+	MediaId string `json:"media_id"`
+	Url     string `json:"url"`
+}
