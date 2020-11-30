@@ -1,6 +1,8 @@
 package mp
 
-import "github.com/yanming-open/wechat/common"
+import (
+	"github.com/yanming-open/wechat/common"
+)
 
 // TokenResponse 获取token的返回结构体
 type tokenResponse struct {
@@ -36,6 +38,7 @@ type TagUsersResponse struct {
 	NextOpenId string `json:"next_openid"`
 }
 
+// 获取用户列表
 type UserListResponse struct {
 	common.BizResponse
 	Total int `json:"total"`
@@ -46,6 +49,7 @@ type UserListResponse struct {
 	NextOpenId string `json:"next_openid"`
 }
 
+// 上传临时素材时的结果返回
 type MediaResponse struct {
 	common.BizResponse
 	Type      string `json:"type"`
@@ -53,8 +57,19 @@ type MediaResponse struct {
 	CreatedAt int    `json:"created_at"`
 }
 
+// 上传永久素材时的结果返回
 type MaterialResponse struct {
 	common.BizResponse
-	MediaId string `json:"media_id"`
-	Url     string `json:"url"`
+	MediaId string        `json:"media_id"`
+	Url     string        `json:"url"`
+	Item    []interface{} `json:"item,omitempty"`
+}
+
+// 获取素材总数结果返回
+type MaterialCountResponse struct {
+	common.BizResponse
+	VoiceCount int `json:"voice_count"`
+	VideoCount int `json:"video_count"`
+	ImageCount int `json:"image_count"`
+	NewsCount  int `json:"news_count"`
 }
