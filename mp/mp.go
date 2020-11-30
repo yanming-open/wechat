@@ -23,6 +23,7 @@ type Mp struct {
 	appsecret      string
 	aeskey         []byte
 	accessToken    string
+	JsTicket       string
 }
 
 // 实例化一个公众号接口实例，同一服务中只要实例化一个即可
@@ -73,8 +74,21 @@ func getAccessToken(mp *Mp) (tokenResponse, error) {
 	}
 }
 
+func getJsTicket(mp *Mp) (result jsTicketResponse, err error) {
+	url := fmt.Sprintf("%sticket/getticket?access_token=%s&type=jsapi", wxApiHost, mp.accessToken)
+	var body []byte
+	body, err = utils.DoGet(url)
+	if err != nil {
+		return
+	} else {
+		err = json.Unmarshal(body, &result)
+		return
+	}
+}
+
 func timerTicketToken(mp *Mp) {
 	var result tokenResponse
+	var jsTicketResp jsTicketResponse
 	var err error
 	for {
 		result, err = getAccessToken(mp)
@@ -86,9 +100,18 @@ func timerTicketToken(mp *Mp) {
 			logger.Error(result.ErrMsg)
 			continue
 		}
-		logger.Info(result.AccessToken)
 		mp.accessToken = result.AccessToken
 		logger.Info("token　初始化成功，可以调用啦！")
+		jsTicketResp, err = getJsTicket(mp)
+		if err != nil {
+			logger.Error(err.Error())
+			continue
+		}
+		if jsTicketResp.ErrCode != 0 {
+			logger.Error(jsTicketResp.ErrMsg)
+			continue
+		}
+		mp.JsTicket = jsTicketResp.Ticket
 		time.Sleep(time.Second * 7100)
 	}
 }

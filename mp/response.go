@@ -11,6 +11,13 @@ type tokenResponse struct {
 	ExpiresIn   int    `json:"expires_in"`   // 过期时间　默认7200秒
 }
 
+// jsapi jsticket输出
+type jsTicketResponse struct {
+	common.BizResponse
+	Ticket    string `json:"ticket"`
+	ExpiresIn int32  `json:"expires_in"`
+}
+
 // 长短地址转换响应
 type long2ShortResponse struct {
 	ErrCode  int    `json:"errcode"`
