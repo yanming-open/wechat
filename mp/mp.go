@@ -2,21 +2,26 @@
 package mp
 
 import (
+	"crypto/sha1"
 	"encoding/json"
 	"fmt"
 	"github.com/yanming-open/wechat/utils"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
+	"io"
 	"os"
+	"sort"
+	"strings"
 	"time"
 )
 
 var logger *zap.Logger
 
 const (
-	wxApiHost = "https://api.weixin.qq.com/cgi-bin/" // 微信接口服务器地址
-	wxSnsHost = "https://api.weixin.qq.com/sns/"
+	wxApiHost   = "https://api.weixin.qq.com/cgi-bin/" // 微信接口服务器地址
+	wxSnsHost   = "https://api.weixin.qq.com/sns/"
+	letterBytes = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 )
 
 type Mp struct {
@@ -60,9 +65,25 @@ func (mp *Mp) initMp() {
 	go timerTicketToken(mp)
 }
 
-// 曝出jsTicket以供web调用时使用
-func (mp *Mp) GetJsTicket() string {
-	return mp.jsTicket
+// 构建web端config时的参数
+// 需要在前端验证用户权限
+func (mp *Mp) GetJsTicketSignature(url string) (resp JsTicketSignatureResponse) {
+	noncestr := randString(16)
+	timestamp := time.Now().Unix()
+	sl := []string{fmt.Sprintf("noncestr=%s", noncestr),
+		fmt.Sprintf("jsapi_ticket=%s", mp.jsTicket),
+		fmt.Sprintf("timestamp=%v", timestamp),
+		fmt.Sprintf("url=%s", url),
+	}
+	sort.Strings(sl)
+	s := sha1.New()
+	io.WriteString(s, strings.Join(sl, ""))
+	signature := fmt.Sprintf("%x", s.Sum(nil))
+	resp.JsapiTicket = mp.jsTicket
+	resp.NonceStr = noncestr
+	resp.Timestamp = timestamp
+	resp.Signature = signature
+	return
 }
 
 // @title getAccessToken

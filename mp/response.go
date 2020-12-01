@@ -84,9 +84,16 @@ type MaterialCountResponse struct {
 // 网页端使用code获取access token 和 openid 的结果返回
 type AuthCodeResponse struct {
 	common.BizResponse
-	AccessToken string `json:"access_token"`
-	ExpiresIn int32 `json:"expires_in"`
+	AccessToken  string `json:"access_token"`
+	ExpiresIn    int32  `json:"expires_in"`
 	RefreshToken string `json:"refresh_token"`
-	OpenId string `json:"openid"`
-	Scope string `json:"scope"`
+	OpenId       string `json:"openid"`
+	Scope        string `json:"scope"`
+}
+
+type JsTicketSignatureResponse struct {
+	NonceStr    string `json:"noncestr"`
+	JsapiTicket string `json:"jsapi_ticket"`
+	Timestamp   int64  `json:"timestamp"`
+	Signature   string `json:"signature"`
 }
