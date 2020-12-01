@@ -14,7 +14,10 @@ import (
 
 var logger *zap.Logger
 
-const wxApiHost = "https://api.weixin.qq.com/cgi-bin/" // 微信接口服务器地址
+const (
+	wxApiHost = "https://api.weixin.qq.com/cgi-bin/" // 微信接口服务器地址
+	wxSnsHost = "https://api.weixin.qq.com/sns/"
+)
 
 type Mp struct {
 	token          string
@@ -23,7 +26,7 @@ type Mp struct {
 	appsecret      string
 	aeskey         []byte
 	accessToken    string
-	JsTicket       string
+	jsTicket       string
 }
 
 // 实例化一个公众号接口实例，同一服务中只要实例化一个即可
@@ -35,7 +38,7 @@ func NewMp(token, encodingaeskey, appid, appsecret string) *Mp {
 }
 
 // 初始化日志
-// 初始化accesstoken调用,使用新线程异步调用
+// 初始化accessToken调用,使用新线程异步调用
 func (mp *Mp) initMp() {
 	hook := &lumberjack.Logger{
 		Filename:   "./mp.log", // 日志文件路径
@@ -57,12 +60,17 @@ func (mp *Mp) initMp() {
 	go timerTicketToken(mp)
 }
 
+// 曝出jsTicket以供web调用时使用
+func (mp *Mp) GetJsTicket() string {
+	return mp.jsTicket
+}
+
 // @title getAccessToken
 // @description 获取access token
 // @auth
 // @return data TokenResponse "返回结果"
 // @return error error "返回错误"
-func getAccessToken(mp *Mp) (tokenResponse, error) {
+func requestAccessToken(mp *Mp) (tokenResponse, error) {
 	url := fmt.Sprintf("%stoken?grant_type=client_credential&appid=%s&secret=%s", wxApiHost, mp.appid, mp.appsecret)
 	buf, err := utils.DoGet(url)
 	var result tokenResponse
@@ -74,7 +82,7 @@ func getAccessToken(mp *Mp) (tokenResponse, error) {
 	}
 }
 
-func getJsTicket(mp *Mp) (result jsTicketResponse, err error) {
+func requestJsTicket(mp *Mp) (result jsTicketResponse, err error) {
 	url := fmt.Sprintf("%sticket/getticket?access_token=%s&type=jsapi", wxApiHost, mp.accessToken)
 	var body []byte
 	body, err = utils.DoGet(url)
@@ -91,7 +99,7 @@ func timerTicketToken(mp *Mp) {
 	var jsTicketResp jsTicketResponse
 	var err error
 	for {
-		result, err = getAccessToken(mp)
+		result, err = requestAccessToken(mp)
 		if err != nil {
 			logger.Error(err.Error())
 			continue
@@ -102,7 +110,7 @@ func timerTicketToken(mp *Mp) {
 		}
 		mp.accessToken = result.AccessToken
 		logger.Info("token　初始化成功，可以调用啦！")
-		jsTicketResp, err = getJsTicket(mp)
+		jsTicketResp, err = requestJsTicket(mp)
 		if err != nil {
 			logger.Error(err.Error())
 			continue
@@ -111,7 +119,7 @@ func timerTicketToken(mp *Mp) {
 			logger.Error(jsTicketResp.ErrMsg)
 			continue
 		}
-		mp.JsTicket = jsTicketResp.Ticket
+		mp.jsTicket = jsTicketResp.Ticket
 		time.Sleep(time.Second * 7100)
 	}
 }

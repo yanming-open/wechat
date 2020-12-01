@@ -80,3 +80,13 @@ type MaterialCountResponse struct {
 	ImageCount int `json:"image_count"`
 	NewsCount  int `json:"news_count"`
 }
+
+// 网页端使用code获取access token 和 openid 的结果返回
+type AuthCodeResponse struct {
+	common.BizResponse
+	AccessToken string `json:"access_token"`
+	ExpiresIn int32 `json:"expires_in"`
+	RefreshToken string `json:"refresh_token"`
+	OpenId string `json:"openid"`
+	Scope string `json:"scope"`
+}
