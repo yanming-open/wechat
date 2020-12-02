@@ -16,7 +16,7 @@ import (
 // 缩略图（thumb）：64KB，支持JPG格式
 func (m *Mp) UploadMedia(filePath, fileType string) (resp *MediaResponse, err error) {
 	url := fmt.Sprintf("%smedia/upload?access_token=%s&type=%s", wxApiHost, m.accessToken, fileType)
-	body, err := utils.DoUpload(url, filePath)
+	body, err := utils.DoUpload(url, filePath,nil)
 	if err != nil {
 		logger.Error(err.Error())
 		return
@@ -35,6 +35,7 @@ func (m *Mp) UploadMedia(filePath, fileType string) (resp *MediaResponse, err er
 // {
 //    "video_url":DOWN_URL
 // }
+// 其它素材返回为内容，如图片则输出为[]byte
 // 需要根据自有业务场景处理返回
 func (m *Mp) GetMeida(mediaid string) (body []byte, err error) {
 	url := fmt.Sprintf("%smedia/get?access_token=%s&media_id=%s", wxApiHost, m.accessToken, mediaid)

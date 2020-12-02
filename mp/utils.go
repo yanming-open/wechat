@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"github.com/yanming-open/wechat/utils"
 	"io"
+	mrand "math/rand"
 	"sort"
 	"strings"
 )
@@ -85,8 +86,8 @@ func ValidateMsg(token, timestamp, nonce, msgEncrypt, msgSignatureIn string) boo
 }
 
 // 长连接换取短连接的方法,共用
-func long2short(url string,accessToken string) string {
-	posturl := fmt.Sprintf("%sshorturl?access_token=%s", wxApiHost,accessToken)
+func long2short(url string, accessToken string) string {
+	posturl := fmt.Sprintf("%sshorturl?access_token=%s", wxApiHost, accessToken)
 	var params = utils.KV{}
 	params["action"] = "long2short"
 	params["long_url"] = url
@@ -104,4 +105,12 @@ func long2short(url string,accessToken string) string {
 			return response.ShortUrl
 		}
 	}
+}
+
+func randString(n int) string {
+	b := make([]byte, n)
+	for i := range b {
+		b[i] = letterBytes[mrand.Int63()%int64(len(letterBytes))]
+	}
+	return string(b)
 }

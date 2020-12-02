@@ -1,19 +1,28 @@
+// 公众号sdk
 package mp
 
 import (
+	"crypto/sha1"
 	"encoding/json"
 	"fmt"
 	"github.com/yanming-open/wechat/utils"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
+	"io"
 	"os"
+	"sort"
+	"strings"
 	"time"
 )
 
 var logger *zap.Logger
 
-const wxApiHost = "https://api.weixin.qq.com/cgi-bin/" // 微信接口服务器地址
+const (
+	wxApiHost   = "https://api.weixin.qq.com/cgi-bin/" // 微信接口服务器地址
+	wxSnsHost   = "https://api.weixin.qq.com/sns/"
+	letterBytes = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+)
 
 type Mp struct {
 	token          string
@@ -22,6 +31,7 @@ type Mp struct {
 	appsecret      string
 	aeskey         []byte
 	accessToken    string
+	jsTicket       string
 }
 
 // 实例化一个公众号接口实例，同一服务中只要实例化一个即可
@@ -33,7 +43,7 @@ func NewMp(token, encodingaeskey, appid, appsecret string) *Mp {
 }
 
 // 初始化日志
-// 初始化accesstoken调用,使用新线程异步调用
+// 初始化accessToken调用,使用新线程异步调用
 func (mp *Mp) initMp() {
 	hook := &lumberjack.Logger{
 		Filename:   "./mp.log", // 日志文件路径
@@ -55,12 +65,33 @@ func (mp *Mp) initMp() {
 	go timerTicketToken(mp)
 }
 
+// 构建web端config时的参数
+// 需要在前端验证用户权限
+func (mp *Mp) GetJsTicketSignature(url string) (resp JsTicketSignatureResponse) {
+	noncestr := randString(16)
+	timestamp := time.Now().Unix()
+	sl := []string{fmt.Sprintf("noncestr=%s", noncestr),
+		fmt.Sprintf("jsapi_ticket=%s", mp.jsTicket),
+		fmt.Sprintf("timestamp=%v", timestamp),
+		fmt.Sprintf("url=%s", url),
+	}
+	sort.Strings(sl)
+	s := sha1.New()
+	io.WriteString(s, strings.Join(sl, ""))
+	signature := fmt.Sprintf("%x", s.Sum(nil))
+	resp.JsapiTicket = mp.jsTicket
+	resp.NonceStr = noncestr
+	resp.Timestamp = timestamp
+	resp.Signature = signature
+	return
+}
+
 // @title getAccessToken
 // @description 获取access token
 // @auth
 // @return data TokenResponse "返回结果"
 // @return error error "返回错误"
-func getAccessToken(mp *Mp) (tokenResponse, error) {
+func requestAccessToken(mp *Mp) (tokenResponse, error) {
 	url := fmt.Sprintf("%stoken?grant_type=client_credential&appid=%s&secret=%s", wxApiHost, mp.appid, mp.appsecret)
 	buf, err := utils.DoGet(url)
 	var result tokenResponse
@@ -72,11 +103,24 @@ func getAccessToken(mp *Mp) (tokenResponse, error) {
 	}
 }
 
+func requestJsTicket(mp *Mp) (result jsTicketResponse, err error) {
+	url := fmt.Sprintf("%sticket/getticket?access_token=%s&type=jsapi", wxApiHost, mp.accessToken)
+	var body []byte
+	body, err = utils.DoGet(url)
+	if err != nil {
+		return
+	} else {
+		err = json.Unmarshal(body, &result)
+		return
+	}
+}
+
 func timerTicketToken(mp *Mp) {
 	var result tokenResponse
+	var jsTicketResp jsTicketResponse
 	var err error
 	for {
-		result, err = getAccessToken(mp)
+		result, err = requestAccessToken(mp)
 		if err != nil {
 			logger.Error(err.Error())
 			continue
@@ -85,9 +129,18 @@ func timerTicketToken(mp *Mp) {
 			logger.Error(result.ErrMsg)
 			continue
 		}
-		logger.Info(result.AccessToken)
 		mp.accessToken = result.AccessToken
 		logger.Info("token　初始化成功，可以调用啦！")
+		jsTicketResp, err = requestJsTicket(mp)
+		if err != nil {
+			logger.Error(err.Error())
+			continue
+		}
+		if jsTicketResp.ErrCode != 0 {
+			logger.Error(jsTicketResp.ErrMsg)
+			continue
+		}
+		mp.jsTicket = jsTicketResp.Ticket
 		time.Sleep(time.Second * 7100)
 	}
 }

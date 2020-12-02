@@ -1,3 +1,4 @@
+// 通用类型定义
 package common
 
 // BizResponse 基础返回类型，定义错误代码及错误消息

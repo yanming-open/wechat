@@ -1,12 +1,21 @@
 package mp
 
-import "github.com/yanming-open/wechat/common"
+import (
+	"github.com/yanming-open/wechat/common"
+)
 
 // TokenResponse 获取token的返回结构体
 type tokenResponse struct {
 	common.BizResponse
 	AccessToken string `json:"access_token"` // access_token
 	ExpiresIn   int    `json:"expires_in"`   // 过期时间　默认7200秒
+}
+
+// jsapi jsticket输出
+type jsTicketResponse struct {
+	common.BizResponse
+	Ticket    string `json:"ticket"`
+	ExpiresIn int32  `json:"expires_in"`
 }
 
 // 长短地址转换响应
@@ -36,6 +45,7 @@ type TagUsersResponse struct {
 	NextOpenId string `json:"next_openid"`
 }
 
+// 获取用户列表
 type UserListResponse struct {
 	common.BizResponse
 	Total int `json:"total"`
@@ -46,9 +56,44 @@ type UserListResponse struct {
 	NextOpenId string `json:"next_openid"`
 }
 
+// 上传临时素材时的结果返回
 type MediaResponse struct {
 	common.BizResponse
 	Type      string `json:"type"`
 	MediaId   string `json:"media_id"`
 	CreatedAt int    `json:"created_at"`
+}
+
+// 上传永久素材时的结果返回
+type MaterialResponse struct {
+	common.BizResponse
+	MediaId string        `json:"media_id"`
+	Url     string        `json:"url"`
+	Item    []interface{} `json:"item,omitempty"`
+}
+
+// 获取素材总数结果返回
+type MaterialCountResponse struct {
+	common.BizResponse
+	VoiceCount int `json:"voice_count"`
+	VideoCount int `json:"video_count"`
+	ImageCount int `json:"image_count"`
+	NewsCount  int `json:"news_count"`
+}
+
+// 网页端使用code获取access token 和 openid 的结果返回
+type AuthCodeResponse struct {
+	common.BizResponse
+	AccessToken  string `json:"access_token"`
+	ExpiresIn    int32  `json:"expires_in"`
+	RefreshToken string `json:"refresh_token"`
+	OpenId       string `json:"openid"`
+	Scope        string `json:"scope"`
+}
+
+type JsTicketSignatureResponse struct {
+	NonceStr    string `json:"noncestr"`
+	JsapiTicket string `json:"jsapi_ticket"`
+	Timestamp   int64  `json:"timestamp"`
+	Signature   string `json:"signature"`
 }

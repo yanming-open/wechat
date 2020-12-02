@@ -1,3 +1,4 @@
+// 通用工具库
 package utils
 
 import (
@@ -8,6 +9,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
 )
 
@@ -55,7 +57,7 @@ func DoPost(url string, params KV) ([]byte, error) {
 }
 
 //
-func DoUpload(url, filePath string) (body []byte, err error) {
+func DoUpload(url, filePath string, kvs KV) (body []byte, err error) {
 	file, err := os.Open(filePath)
 	if err != nil {
 		return
@@ -63,7 +65,7 @@ func DoUpload(url, filePath string) (body []byte, err error) {
 	defer file.Close()
 	bodyBuf := &bytes.Buffer{}
 	bodyWriter := multipart.NewWriter(bodyBuf)
-	fileWriter, err := bodyWriter.CreateFormFile("media", filePath)
+	fileWriter, err := bodyWriter.CreateFormFile("media", filepath.Base(filePath))
 	if err != nil {
 		return
 	}
@@ -72,6 +74,10 @@ func DoUpload(url, filePath string) (body []byte, err error) {
 		return
 	}
 	contentType := bodyWriter.FormDataContentType()
+	for k, v := range kvs {
+		out, _ := json.Marshal(v)
+		bodyWriter.WriteField(k, string(out))
+	}
 	bodyWriter.Close()
 	var resp *http.Response
 	resp, err = http.Post(url, contentType, bodyBuf)
