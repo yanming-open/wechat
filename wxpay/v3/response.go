@@ -31,6 +31,7 @@ type H5OrderResponse struct {
 
 // 服务商模式订单查询响应
 type QueryPartnerOrderResponse struct {
+	errorResponse
 	SpAppId        string            `json:"sp_appid" validate:"required"`     // 服务商申请的公众号或移动应用appid
 	SpMchId        string            `json:"sp_mchid" validate:"required"`     // 服务商户号，由微信支付生成并下发
 	SubAppId       string            `json:"sub_appid,omitempty"`              // 子商户申请的公众号或移动应用appid
@@ -47,4 +48,9 @@ type QueryPartnerOrderResponse struct {
 	Amount         Amount            `json:"amount"`                           // 订单金额
 	SceneInfo      QuerySceneInfo    `json:"scene_info,omitempty"`             // 场景信息
 	Promotion      []PromotionDetail `json:"promotion_detail,omitempty"`       // 优惠功能
+}
+
+// 退款单响应
+type RefundOrderResponse struct {
+	errorResponse
 }

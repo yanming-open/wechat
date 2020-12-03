@@ -96,3 +96,24 @@ type PromotionDetail struct {
 	Currency            string       `json:"currency"`             // 优惠币种
 	GoodsDetail         []QueryGoods `json:"goods_detail"`         // 单品列表
 }
+
+// 退款单－订单金额
+type RefundAmount struct {
+	Refund   int    `json:"refund" validate:"required"`   // 退款金额
+	Total    int    `json:"total" validate:"required"`    // 总金额
+	Currency string `json:"currency" validate:"required"` // 货币类型
+
+}
+
+// 订单退款申请
+type RefundsOrder struct {
+	SubMchId      string       `json:"sub_mchid" validate:"required"`
+	SpAppId       string       `json:"sp_appid" validate:"required"`
+	SubAppId      string       `json:"sub_appid,omitempty"`
+	TransactionId string       `json:"transaction_id,omitempty"`
+	OutTradeNo    string       `json:"out_trade_no,omitempty"`
+	OutRefundNo   string       `json:"out_refund_no" validate:"required"`
+	Reason        string       `json:"reason"`
+	Amount        RefundAmount `json:"amount" validate:"required"`
+	NotifyUrl     string       `json:"notify_url,omitempty"`
+}
