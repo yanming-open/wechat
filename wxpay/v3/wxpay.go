@@ -3,7 +3,6 @@ package v3
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -67,7 +66,7 @@ func (wepay *WxPay) doHttpRequest(url, nonceStr, signature, body string, timeSta
 
 	resp, err := client.Do(request)
 	if err != nil {
-		log.Println(err)
+		logger.Error(err.Error())
 		return nil, err
 	}
 	defer resp.Body.Close()

@@ -9,7 +9,6 @@ import (
 	"encoding/base64"
 	"encoding/pem"
 	"io/ioutil"
-	"log"
 	mrand "math/rand"
 )
 
@@ -24,11 +23,11 @@ func rsa256Encrypt(ciphertext, keyPath string) string {
 	hash.Write(msg)
 	privateKey, err := x509.ParsePKCS8PrivateKey(KeyBlock.Bytes)
 	if err != nil {
-		log.Fatal(err, "ParsePKCS8PrivateKey")
+		logger.Error(err.Error())
 	}
 	sign, err := rsa.SignPKCS1v15(random, privateKey.(*rsa.PrivateKey), crypto.SHA256, hash.Sum(nil))
 	if err != nil {
-		log.Fatal(err, "SignPKCS1v15")
+		logger.Error(err.Error())
 	}
 	return base64.StdEncoding.EncodeToString(sign)
 }

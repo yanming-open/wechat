@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/yanming-open/wechat/utils"
-	"log"
 )
 
 // 验证订单内容是否合法
@@ -26,7 +25,7 @@ func (wepay *WxPay) validatePartnerOrder(order *PartnerOrder) (err error) {
 func (wepay *WxPay) PartnerAppOrder(order PartnerOrder) (resp PrepayIdResponse, err error) {
 	err = wepay.validatePartnerOrder(&order)
 	if err != nil {
-		log.Println(err)
+		logger.Error(err.Error())
 	}
 	result, err := wepay.orderRequest(order, "app")
 	if err != nil {
@@ -41,7 +40,7 @@ func (wepay *WxPay) PartnerAppOrder(order PartnerOrder) (resp PrepayIdResponse, 
 func (wepay *WxPay) PartnerNativeOrder(order PartnerOrder) (resp NativeOrderResponse, err error) {
 	err = wepay.validatePartnerOrder(&order)
 	if err != nil {
-		log.Println(err)
+		logger.Error(err.Error())
 	}
 	result, err := wepay.orderRequest(order, "native")
 	if err != nil {
@@ -56,7 +55,7 @@ func (wepay *WxPay) PartnerNativeOrder(order PartnerOrder) (resp NativeOrderResp
 func (wepay *WxPay) PartnerH5Order(order PartnerOrder) (resp H5OrderResponse, err error) {
 	err = wepay.validatePartnerOrder(&order)
 	if err != nil {
-		log.Println(err)
+		logger.Error(err.Error())
 	}
 	result, err := wepay.orderRequest(order, "jsapi")
 	if err != nil {
@@ -71,7 +70,7 @@ func (wepay *WxPay) PartnerH5Order(order PartnerOrder) (resp H5OrderResponse, er
 func (wepay *WxPay) PartnerJsApiOrder(order PartnerOrder) (resp PrepayIdResponse, err error) {
 	err = wepay.validatePartnerOrder(&order)
 	if err != nil {
-		log.Println(err)
+		logger.Error(err.Error())
 	}
 	result, err := wepay.orderRequest(order, "jsapi")
 	if err != nil {
