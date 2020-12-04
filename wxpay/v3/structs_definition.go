@@ -59,7 +59,7 @@ type PartnerOrder struct {
 	SettleInfo  SettleInfo `json:"settle_info,omitempty"`
 	Amount      Amount     `json:"amount" validate:"required"`
 	Detail      Discount   `json:"detail,omitempty"`
-	SceneInfo   SceneInfo  `json:"scene_info",omitempty`
+	SceneInfo   SceneInfo  `json:"scene_info,omitempty"`
 }
 
 // 支付者信息
