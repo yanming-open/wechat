@@ -1,14 +1,14 @@
 package v3
 
 type errorResponse struct {
-	Code    string `json:"code"`
-	Message string `json:"message"`
+	Code    string `json:"code,omitempty"`
+	Message string `json:"message,omitempty"`
 	Detail  struct {
-		Field    string `json:"field"`
-		Value    string `json:"value"`
-		Issue    string `json:"issue"`
-		Location string `json:"location"`
-	} `json:"detail"`
+		Field    string `json:"field,omitempty"`
+		Value    string `json:"value,omitempty"`
+		Issue    string `json:"issue,omitempty"`
+		Location string `json:"location,omitempty"`
+	} `json:"detail,omitempty"`
 }
 
 // Native下单响应
@@ -50,7 +50,44 @@ type QueryPartnerOrderResponse struct {
 	Promotion      []PromotionDetail `json:"promotion_detail,omitempty"`       // 优惠功能
 }
 
+// 退款单－订单金额－响应
+type RefundAmountReseponse struct {
+	Refund         int    `json:"refund"`          // 退款金额
+	PayerRefund    int    `json:"payer_refund"`    // 用户退款金额
+	DiscountRefund int    `json:"discount_refund"` // 优惠退款金额
+	Currency       string `json:"currency"`        // 退款币种
+}
+
+// 退款单-优惠退款详情-响应
+type PromotionDetailResponse struct {
+	PromotionId  string `json:"promotion_id"`  // 券ID
+	Scope        string `json:"scope"`         // 优惠范围
+	Type         string `json:"type"`          // 优惠类型
+	Amount       int    `json:"amount"`        // 优惠券面额
+	RefundAmount int    `json:"refund_amount"` // 优惠退款金额
+}
+
 // 退款单响应
 type RefundOrderResponse struct {
 	errorResponse
+	RefundId        string                  `json:"refund_id"`        // 微信退款单号
+	OutRefundNo     string                  `json:"out_refund_no"`    // 商户退款单号
+	CreateTime      string                  `json:"create_time"`      // 退款创建时间
+	Amount          RefundAmountReseponse   `json:"amount"`           // 订单金额
+	PromotionDetail PromotionDetailResponse `json:"promotion_detail"` // 优惠退款详情
+}
+
+type RefundOrderQueryResponse struct {
+	errorResponse
+	RefundId            string                    `json:"refund_id"`                        // 微信退款单号
+	OutRefundNo         string                    `json:"out_refund_no"`                    // 商户退款单号
+	OutTradeNo          string                    `json:"out_trade_no" validate:"required"` // 商户订单号
+	TransactionId       string                    `json:"transaction_id"`                   // 微信支付订单号
+	Channel             string                    `json:"channel"`                          // 退款渠道
+	UserReceivedAccount string                    `json:"user_received_account"`            // 退款入账账户
+	SuccessTime         string                    `json:"success_time"`                     // 退款成功时间
+	CreateTime          string                    `json:"create_time"`                      // 退款创建时间
+	Status              string                    `json:"status"`                           // 退款状态
+	Amount              RefundAmountReseponse     `json:"amount"`                           // 订单金额
+	PromotionDetail     []PromotionDetailResponse `json:"promotion_detail"`                 // 优惠退款详情
 }

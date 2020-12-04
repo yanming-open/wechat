@@ -102,7 +102,6 @@ type RefundAmount struct {
 	Refund   int    `json:"refund" validate:"required"`   // 退款金额
 	Total    int    `json:"total" validate:"required"`    // 总金额
 	Currency string `json:"currency" validate:"required"` // 货币类型
-
 }
 
 // 订单退款申请

@@ -27,7 +27,7 @@ type qrCodeRequest struct {
 			SceneId  int    `json:"scene_id,omitempty"`  // 场景值ID，临时二维码时为32位非0整型，永久二维码时最大值为100000（目前参数只支持1--100000）
 			SceneStr string `json:"scene_str,omitempty"` // 场景值ID（字符串形式的ID），字符串类型，长度限制为1到64
 		} `json:"scene"`
-	} `json:"action_info"`                    // 二维码详细信息
+	} `json:"action_info"` // 二维码详细信息
 	ExpireSeconds int `json:"expire_seconds"` // 该二维码有效时间，以秒为单位。 最大不超过2592000（即30天），此字段如果不填，则默认有效期为30秒。
 }
 

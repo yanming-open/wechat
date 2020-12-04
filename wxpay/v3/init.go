@@ -37,7 +37,7 @@ func init() {
 		zapcore.NewMultiWriteSyncer(
 			zapcore.AddSync(os.Stdout),
 			zapcore.AddSync(hook)), // 打印到控制台和文件
-		zap.InfoLevel,              // 日志级别
+		zap.InfoLevel, // 日志级别
 	)
 	logger = zap.New(core)
 	defer logger.Sync()
