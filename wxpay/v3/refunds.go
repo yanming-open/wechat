@@ -13,6 +13,9 @@ func (wepay *WxPay) Refund(refund RefundsOrder) (resp RefundOrderResponse, err e
 	if wepay.subAppId != "" {
 		refund.SubAppId = wepay.subAppId
 	}
+	if wepay.refundNotifyUrl != ""{
+		refund.NotifyUrl = wepay.refundNotifyUrl
+	}
 	err = validate.Struct(refund)
 	if err != nil {
 		logger.Error(err.Error())

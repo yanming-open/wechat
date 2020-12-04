@@ -9,34 +9,37 @@ import (
 )
 
 type WeConfig struct {
-	SpAppId   string
-	SpMchId   string
-	SubMchId  string
-	SubAppId  string
-	SerialNo  string
-	KeyPath   string
-	NotifyUrl string
+	SpAppId         string
+	SpMchId         string
+	SubMchId        string
+	SubAppId        string
+	SerialNo        string
+	KeyPath         string
+	PayNotifyUrl    string
+	RefundNotifyUrl string
 }
 
 type WxPay struct {
-	spAppId   string
-	spMchId   string
-	subMchId  string
-	subAppId  string
-	serialNo  string
-	keyPath   string
-	notifyUrl string
+	spAppId         string
+	spMchId         string
+	subMchId        string
+	subAppId        string
+	serialNo        string
+	keyPath         string
+	payNotifyUrl    string
+	refundNotifyUrl string
 }
 
 func NewWxPay(c WeConfig) *WxPay {
 	var wepay = WxPay{
-		spAppId:   c.SpAppId,
-		spMchId:   c.SpMchId,
-		subAppId:  c.SubAppId,
-		subMchId:  c.SubMchId,
-		serialNo:  c.SerialNo,
-		keyPath:   c.KeyPath,
-		notifyUrl: c.NotifyUrl,
+		spAppId:         c.SpAppId,
+		spMchId:         c.SpMchId,
+		subAppId:        c.SubAppId,
+		subMchId:        c.SubMchId,
+		serialNo:        c.SerialNo,
+		keyPath:         c.KeyPath,
+		payNotifyUrl:    c.PayNotifyUrl,
+		refundNotifyUrl: c.RefundNotifyUrl,
 	}
 	return &wepay
 }
