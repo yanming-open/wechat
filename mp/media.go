@@ -16,7 +16,7 @@ import (
 // 缩略图（thumb）：64KB，支持JPG格式
 func (m *Mp) UploadMedia(filePath, fileType string) (resp *MediaResponse, err error) {
 	url := fmt.Sprintf("%smedia/upload?access_token=%s&type=%s", wxApiHost, m.accessToken, fileType)
-	body, err := utils.DoUpload(url, filePath,nil)
+	body, err := utils.DoUpload(url, filePath, nil)
 	if err != nil {
 		logger.Error(err.Error())
 		return
