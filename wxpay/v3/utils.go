@@ -2,6 +2,8 @@ package v3
 
 import (
 	"crypto"
+	"crypto/aes"
+	"crypto/cipher"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/sha256"
@@ -39,4 +41,23 @@ func randString(n int) string {
 		b[i] = letterBytes[mrand.Int63()%int64(len(letterBytes))]
 	}
 	return string(b)
+}
+
+// AES-256-GCM 算法解密数据
+// ciphertext需要先base64 decode
+func certificateDecrypt(ciphertext []byte, key, nonce, associated string) (str string, err error) {
+	block, err := aes.NewCipher([]byte(key))
+	if err != nil {
+		return
+	}
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return
+	}
+	plaintext, err := gcm.Open(nil, []byte(nonce), ciphertext, []byte(associated))
+	if err != nil {
+		return
+	}
+	str = string(plaintext)
+	return
 }

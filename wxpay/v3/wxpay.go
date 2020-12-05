@@ -9,25 +9,28 @@ import (
 )
 
 type WeConfig struct {
-	SpAppId         string
-	SpMchId         string
-	SubMchId        string
-	SubAppId        string
-	SerialNo        string
-	KeyPath         string
-	PayNotifyUrl    string
-	RefundNotifyUrl string
+	SpAppId         string // 服务商申请的公众号或移动应用appid
+	SpMchId         string // 服务商户号
+	SubMchId        string // 子商户号
+	SubAppId        string // 子商户申请的公众号或移动应用appid
+	SerialNo        string // 证书序列号　V3　版本api必传
+	KeyPath         string // 证书私钥路径
+	PayNotifyUrl    string // 支付通知地址
+	RefundNotifyUrl string // 退款通知地址
+	ApiV3Key        string // v3密钥
 }
 
 type WxPay struct {
-	spAppId         string
-	spMchId         string
-	subMchId        string
-	subAppId        string
-	serialNo        string
-	keyPath         string
-	payNotifyUrl    string
-	refundNotifyUrl string
+	spAppId         string // 服务商申请的公众号或移动应用appid
+	spMchId         string // 服务商户号
+	subMchId        string // 子商户号
+	subAppId        string // 子商户申请的公众号或移动应用appid
+	serialNo        string // 证书序列号　V3　版本api必传
+	keyPath         string // 证书私钥路径
+	payNotifyUrl    string // 支付通知地址
+	refundNotifyUrl string // 退款通知地址
+	apiV3Key        string // v3密钥
+	publicKey       string // 请求得到的公钥串　TODO:
 }
 
 func NewWxPay(c WeConfig) *WxPay {
@@ -40,6 +43,7 @@ func NewWxPay(c WeConfig) *WxPay {
 		keyPath:         c.KeyPath,
 		payNotifyUrl:    c.PayNotifyUrl,
 		refundNotifyUrl: c.RefundNotifyUrl,
+		apiV3Key:        c.ApiV3Key,
 	}
 	return &wepay
 }
@@ -75,10 +79,4 @@ func (wepay *WxPay) doHttpRequest(url, nonceStr, signature, body string, timeSta
 	defer resp.Body.Close()
 	buf, err := ioutil.ReadAll(resp.Body)
 	return buf, err
-}
-
-func (wepay *WxPay) getCertficates() {
-	url := "/v3/certificates"
-	ts, nonceStr, _, signature := wepay.getSign("GET", url, "")
-	wepay.doHttpRequest(fmt.Sprintf("%s%s", wePayHost, url), nonceStr, signature, "", ts)
 }
