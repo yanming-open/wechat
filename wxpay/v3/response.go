@@ -77,6 +77,7 @@ type RefundOrderResponse struct {
 	PromotionDetail PromotionDetailResponse `json:"promotion_detail"` // 优惠退款详情
 }
 
+// 退款单查询响应
 type RefundOrderQueryResponse struct {
 	errorResponse
 	RefundId            string                    `json:"refund_id"`                        // 微信退款单号
@@ -90,4 +91,12 @@ type RefundOrderQueryResponse struct {
 	Status              string                    `json:"status"`                           // 退款状态
 	Amount              RefundAmountReseponse     `json:"amount"`                           // 订单金额
 	PromotionDetail     []PromotionDetailResponse `json:"promotion_detail"`                 // 优惠退款详情
+}
+
+// 交易帐单响应
+type BillResponse struct {
+	errorResponse
+	HashType    string `json:"hash_type"`    // 哈希类型
+	HashValue   string `json:"hash_value"`   // 哈希值
+	DownloadUrl string `json:"download_url"` // 帐单下载地址
 }
