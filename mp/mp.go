@@ -141,6 +141,6 @@ func timerTicketToken(mp *mp) {
 			continue
 		}
 		mp.jsTicket = jsTicketResp.Ticket
-		time.Sleep(time.Second * 7100)
+		time.Sleep(time.Second * 7200)
 	}
 }
