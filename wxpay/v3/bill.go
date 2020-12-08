@@ -30,7 +30,7 @@ const (
 // 如有需要，可在调取“下载对账单”API接口时不传sub_mch_id，
 // 获取服务商下全量电商二级商户（包括小微商户和非小微商户）的对账单
 // TODO: 校验直连商户是否成功下载帐单
-func (wepay *WxPay) TradeBill(date, tar string, billtype BillType) (resp BillResponse, err error) {
+func (wepay *wxPay) TradeBill(date, tar string, billtype BillType) (resp BillResponse, err error) {
 	params := url.Values{}
 	params.Add("bill_date", date)
 	if wepay.subMchId != "" {
@@ -55,7 +55,7 @@ func (wepay *WxPay) TradeBill(date, tar string, billtype BillType) (resp BillRes
 }
 
 // 申请资金账单
-func (wepay *WxPay) FundFlowBill(date, tar string, accountType AccountType) (resp BillResponse, err error) {
+func (wepay *wxPay) FundFlowBill(date, tar string, accountType AccountType) (resp BillResponse, err error) {
 	params := url.Values{}
 	params.Add("bill_date", date)
 	if accountType != "" {
@@ -79,7 +79,7 @@ func (wepay *WxPay) FundFlowBill(date, tar string, accountType AccountType) (res
 // @return: 如果帐单申请时指定了为压缩包，则需要将body保存为.gzip的压缩文件
 //			如示指定压缩格式　建议将body直接保存后缀为csv文件
 //
-func (wepay *WxPay) DownloadBill(bill BillResponse) (body []byte, err error) {
+func (wepay *wxPay) DownloadBill(bill BillResponse) (body []byte, err error) {
 	ts, nonceStr, _, signature := wepay.getSign(
 		"GET",
 		strings.Replace(bill.DownloadUrl, wePayHost, "", 1),

@@ -40,7 +40,7 @@ type QrCode struct {
 }
 
 // 创建临时二维码
-func (this *Mp) CreateQrCode(expire int, sceneinfo interface{}) (qc *QrCode) {
+func (this *mp) CreateQrCode(expire int, sceneinfo interface{}) (qc *QrCode) {
 	url := fmt.Sprintf("%sqrcode/create?access_token=%s", wxApiHost, this.accessToken)
 	var request = qrCodeRequest{}
 	switch sceneinfo.(type) {
@@ -71,7 +71,7 @@ func (this *Mp) CreateQrCode(expire int, sceneinfo interface{}) (qc *QrCode) {
 }
 
 // 创建永久二维码
-func (this *Mp) CreateLimitQrCode(sceneinfo interface{}) (qc *QrCode) {
+func (this *mp) CreateLimitQrCode(sceneinfo interface{}) (qc *QrCode) {
 	url := fmt.Sprintf("%sqrcode/create?access_token=%s", wxApiHost, this.accessToken)
 	var request = qrCodeRequest{}
 	switch sceneinfo.(type) {

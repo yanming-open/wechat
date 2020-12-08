@@ -16,7 +16,7 @@ type Tag struct {
 }
 
 // 创建tag
-func (m *Mp) CreateTag(name string) (tag *Tag, err error) {
+func (m *mp) CreateTag(name string) (tag *Tag, err error) {
 	url := fmt.Sprintf("%stags/create?access_token=%s", wxApiHost, m.accessToken)
 	params := utils.KV{}
 	params["tag"] = utils.KV{"name": name}
@@ -39,7 +39,7 @@ func (m *Mp) CreateTag(name string) (tag *Tag, err error) {
 }
 
 // 删除标签
-func (m *Mp) DeleteTag(id int) (err error) {
+func (m *mp) DeleteTag(id int) (err error) {
 	url := fmt.Sprintf("%stags/delete?access_token=%s", wxApiHost, m.accessToken)
 	params := utils.KV{}
 	params["tag"] = utils.KV{"id": id}
@@ -57,7 +57,7 @@ func (m *Mp) DeleteTag(id int) (err error) {
 }
 
 // 修改标签
-func (m *Mp) UpdateTag(id int, name string) (err error) {
+func (m *mp) UpdateTag(id int, name string) (err error) {
 	url := fmt.Sprintf("%stags/update?access_token=%s", wxApiHost, m.accessToken)
 	params := utils.KV{}
 	params["tag"] = utils.KV{"id": id, "name": name}
@@ -81,7 +81,7 @@ func (m *Mp) UpdateTag(id int, name string) (err error) {
 }
 
 // 获取全部标签列表
-func (m *Mp) GetTags() (list []Tag) {
+func (m *mp) GetTags() (list []Tag) {
 	url := fmt.Sprintf("%stags/get?access_token=%s", wxApiHost, m.accessToken)
 	buf, err := utils.DoGet(url)
 	if err != nil {
@@ -96,7 +96,7 @@ func (m *Mp) GetTags() (list []Tag) {
 }
 
 // 获取标签下粉丝列表
-func (m *Mp) GetTagUsers(id int, nextOpenId string) (tagusers TagUsersResponse, err error) {
+func (m *mp) GetTagUsers(id int, nextOpenId string) (tagusers TagUsersResponse, err error) {
 	url := fmt.Sprintf("%suser/tag/get?access_token=%s", wxApiHost, m.accessToken)
 	params := utils.KV{}
 	params["tag"] = utils.KV{"tagid": id, "next_openid": nextOpenId}
@@ -118,7 +118,7 @@ func (m *Mp) GetTagUsers(id int, nextOpenId string) (tagusers TagUsersResponse, 
 }
 
 // 批量为用户打标签
-func (m *Mp) BatchTagGing(id int, openIdList []string) (err error) {
+func (m *mp) BatchTagGing(id int, openIdList []string) (err error) {
 	url := fmt.Sprintf("%stags/members/batchtagging?access_token=%s", wxApiHost, m.accessToken)
 	params := utils.KV{}
 	params["tagid"] = id
@@ -143,7 +143,7 @@ func (m *Mp) BatchTagGing(id int, openIdList []string) (err error) {
 }
 
 // 批量为用户取消标签
-func (m *Mp) BatchUnTagGing(id int, openIdList []string) (err error) {
+func (m *mp) BatchUnTagGing(id int, openIdList []string) (err error) {
 	url := fmt.Sprintf("%stags/members/batchuntagging?access_token=%s", wxApiHost, m.accessToken)
 	params := utils.KV{}
 	params["tagid"] = id
@@ -168,7 +168,7 @@ func (m *Mp) BatchUnTagGing(id int, openIdList []string) (err error) {
 }
 
 // 获取用户身上的标签列表
-func (m *Mp) GetUserTagIdList(openId string) (idList []int, err error) {
+func (m *mp) GetUserTagIdList(openId string) (idList []int, err error) {
 	url := fmt.Sprintf("%stags/getidlist?access_token=%s", wxApiHost, m.accessToken)
 	params := utils.KV{}
 	params["openid"] = openId

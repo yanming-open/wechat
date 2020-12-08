@@ -32,7 +32,7 @@ type VideoDesc struct {
 //    "title":VIDEO_TITLE,
 //    "introduction":INTRODUCTION
 //}
-func (m *Mp) MaterialAdd(filePath, fileType string, videoDesc utils.KV) (resp MaterialResponse, err error) {
+func (m *mp) MaterialAdd(filePath, fileType string, videoDesc utils.KV) (resp MaterialResponse, err error) {
 	url := fmt.Sprintf("%smaterial/add_material?access_token=%s&type=%s", wxApiHost, m.accessToken, fileType)
 	if fileType == Video && videoDesc == nil {
 		return resp, errors.New("视频描述不能为空")
@@ -47,7 +47,7 @@ func (m *Mp) MaterialAdd(filePath, fileType string, videoDesc utils.KV) (resp Ma
 }
 
 // 新增永久图文素材
-func (m *Mp) MaterialAddNews(news []MaterialNews) (resp MaterialResponse, err error) {
+func (m *mp) MaterialAddNews(news []MaterialNews) (resp MaterialResponse, err error) {
 	url := fmt.Sprintf("%smaterial/add_news?access_token=%s", wxApiHost, m.accessToken)
 	params := utils.KV{}
 	params["articles"] = news
@@ -64,7 +64,7 @@ func (m *Mp) MaterialAddNews(news []MaterialNews) (resp MaterialResponse, err er
 
 // 上传图文消息内的图片获取URL
 // 图片仅支持jpg/png格式，大小必须在1MB以下
-func (m *Mp) MaterialUploadImg(filePath string) string {
+func (m *mp) MaterialUploadImg(filePath string) string {
 	url := fmt.Sprintf("%smedia/uploadimg?access_token=%s", wxApiHost, m.accessToken)
 	body, err := utils.DoUpload(url, filePath, nil)
 	if err != nil {
@@ -86,7 +86,7 @@ func (m *Mp) MaterialUploadImg(filePath string) string {
 }
 
 // 返回结构请参考 https://developers.weixin.qq.com/doc/offiaccount/Asset_Management/Get_materials_list.html
-func (m *Mp) BatchGetMaterial(Type string, offset, count int) (result interface{}, err error) {
+func (m *mp) BatchGetMaterial(Type string, offset, count int) (result interface{}, err error) {
 	url := fmt.Sprintf("%smaterial/batchget_material?access_token=%s", wxApiHost, m.accessToken)
 	params := utils.KV{}
 	params["type"] = Type
@@ -98,7 +98,7 @@ func (m *Mp) BatchGetMaterial(Type string, offset, count int) (result interface{
 }
 
 // 获取永久素材总数
-func (m *Mp) GetMaterialCount() (resp MaterialCountResponse, err error) {
+func (m *mp) GetMaterialCount() (resp MaterialCountResponse, err error) {
 	url := fmt.Sprintf("%smaterial/get_materialcount?access_token=%s", wxApiHost, m.accessToken)
 	var body []byte
 	body, err = utils.DoGet(url)

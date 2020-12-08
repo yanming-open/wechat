@@ -14,7 +14,7 @@ import (
 // 语音（voice）：2M，播放长度不超过60s，支持AMR\MP3格式
 // 视频（video）：10MB，支持MP4格式
 // 缩略图（thumb）：64KB，支持JPG格式
-func (m *Mp) UploadMedia(filePath, fileType string) (resp *MediaResponse, err error) {
+func (m *mp) UploadMedia(filePath, fileType string) (resp *MediaResponse, err error) {
 	url := fmt.Sprintf("%smedia/upload?access_token=%s&type=%s", wxApiHost, m.accessToken, fileType)
 	body, err := utils.DoUpload(url, filePath, nil)
 	if err != nil {
@@ -37,7 +37,7 @@ func (m *Mp) UploadMedia(filePath, fileType string) (resp *MediaResponse, err er
 // }
 // 其它素材返回为内容，如图片则输出为[]byte
 // 需要根据自有业务场景处理返回
-func (m *Mp) GetMeida(mediaid string) (body []byte, err error) {
+func (m *mp) GetMeida(mediaid string) (body []byte, err error) {
 	url := fmt.Sprintf("%smedia/get?access_token=%s&media_id=%s", wxApiHost, m.accessToken, mediaid)
 	body, err = utils.DoGet(url)
 	return

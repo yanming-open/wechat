@@ -9,7 +9,7 @@ import (
 
 // 验证订单内容是否合法
 // TODO: 级联下required字段处理
-func (wepay *WxPay) validatePartnerOrder(order *PartnerOrder) (err error) {
+func (wepay *wxPay) validatePartnerOrder(order *PartnerOrder) (err error) {
 	order.SpAppId = wepay.spAppId
 	order.SpMchId = wepay.spMchId
 	order.SubMchId = wepay.subMchId
@@ -22,7 +22,7 @@ func (wepay *WxPay) validatePartnerOrder(order *PartnerOrder) (err error) {
 }
 
 // 服务商APP下单
-func (wepay *WxPay) PartnerAppOrder(order PartnerOrder) (resp PrepayIdResponse, err error) {
+func (wepay *wxPay) PartnerAppOrder(order PartnerOrder) (resp PrepayIdResponse, err error) {
 	result, err := wepay.orderPartnerRequest(order, "app")
 	if err != nil {
 		return PrepayIdResponse{}, err
@@ -33,7 +33,7 @@ func (wepay *WxPay) PartnerAppOrder(order PartnerOrder) (resp PrepayIdResponse, 
 }
 
 // 服务商Native下单
-func (wepay *WxPay) PartnerNativeOrder(order PartnerOrder) (resp NativeOrderResponse, err error) {
+func (wepay *wxPay) PartnerNativeOrder(order PartnerOrder) (resp NativeOrderResponse, err error) {
 	result, err := wepay.orderPartnerRequest(order, "native")
 	if err != nil {
 		return NativeOrderResponse{}, err
@@ -44,7 +44,7 @@ func (wepay *WxPay) PartnerNativeOrder(order PartnerOrder) (resp NativeOrderResp
 }
 
 // 服务商H5下单
-func (wepay *WxPay) PartnerH5Order(order PartnerOrder) (resp H5OrderResponse, err error) {
+func (wepay *wxPay) PartnerH5Order(order PartnerOrder) (resp H5OrderResponse, err error) {
 	result, err := wepay.orderPartnerRequest(order, "jsapi")
 	if err != nil {
 		return H5OrderResponse{}, err
@@ -55,7 +55,7 @@ func (wepay *WxPay) PartnerH5Order(order PartnerOrder) (resp H5OrderResponse, er
 }
 
 // 服务商JsApi/小程序下单
-func (wepay *WxPay) PartnerJsApiOrder(order PartnerOrder) (resp PrepayIdResponse, err error) {
+func (wepay *wxPay) PartnerJsApiOrder(order PartnerOrder) (resp PrepayIdResponse, err error) {
 	result, err := wepay.orderPartnerRequest(order, "jsapi")
 	if err != nil {
 		return PrepayIdResponse{}, err
@@ -66,7 +66,7 @@ func (wepay *WxPay) PartnerJsApiOrder(order PartnerOrder) (resp PrepayIdResponse
 }
 
 // 执行订单相关请求
-func (wepay *WxPay) orderPartnerRequest(order PartnerOrder, orderType string) (body []byte, err error) {
+func (wepay *wxPay) orderPartnerRequest(order PartnerOrder, orderType string) (body []byte, err error) {
 	err = wepay.validatePartnerOrder(&order)
 	if err != nil {
 		logger.Error(err.Error())
@@ -80,7 +80,7 @@ func (wepay *WxPay) orderPartnerRequest(order PartnerOrder, orderType string) (b
 }
 
 // 微信支付订单号查询
-func (wepay *WxPay) PartnerQueryOrderTransactions(id string) (resp QueryPartnerOrderResponse, err error) {
+func (wepay *wxPay) PartnerQueryOrderTransactions(id string) (resp QueryPartnerOrderResponse, err error) {
 	url := fmt.Sprintf("%stransactions/id/%s?sp_mchid=%s&sub_mchid=%s", urlPartnerPrefix, id, wepay.spMchId, wepay.subMchId)
 	ts, nonceStr, _, signature := wepay.getSign("GET", url, "")
 	var body []byte
@@ -93,7 +93,7 @@ func (wepay *WxPay) PartnerQueryOrderTransactions(id string) (resp QueryPartnerO
 }
 
 // 商户订单号查询
-func (wepay *WxPay) PartnerQueryOrderOutTradeNo(outTradeNo string) (resp QueryPartnerOrderResponse, err error) {
+func (wepay *wxPay) PartnerQueryOrderOutTradeNo(outTradeNo string) (resp QueryPartnerOrderResponse, err error) {
 	url := fmt.Sprintf("%stransactions/out-trade-no/%s?sp_mchid=%s&sub_mchid=%s", urlPartnerPrefix, outTradeNo, wepay.spMchId, wepay.subMchId)
 	ts, nonceStr, _, signature := wepay.getSign("GET", url, "")
 	var body []byte
@@ -106,7 +106,7 @@ func (wepay *WxPay) PartnerQueryOrderOutTradeNo(outTradeNo string) (resp QueryPa
 }
 
 // 关闭订单
-func (wepay *WxPay) PartnerCloseOrder(outTradeNo string) error {
+func (wepay *wxPay) PartnerCloseOrder(outTradeNo string) error {
 	url := fmt.Sprintf("%stransactions/out-trade-no/%s/close", urlPartnerPrefix, outTradeNo)
 	bodyParams := utils.KV{}
 	bodyParams["sp_mchid"] = wepay.spMchId

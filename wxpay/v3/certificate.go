@@ -22,7 +22,7 @@ type Certificate struct {
 }
 
 // TODO:获取加密证书，加密证书序列号
-func (wepay *WxPay) getCertficates() {
+func (wepay *wxPay) getCertficates() {
 	url := "/v3/certificates"
 	ts, nonceStr, _, signature := wepay.getSign("GET", url, "")
 	buf, err := wepay.doHttpRequest(fmt.Sprintf("%s%s", wePayHost, url), nonceStr, signature, "", ts)

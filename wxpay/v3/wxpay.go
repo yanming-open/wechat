@@ -20,7 +20,7 @@ type WeConfig struct {
 	ApiV3Key        string // v3密钥
 }
 
-type WxPay struct {
+type wxPay struct {
 	spAppId         string // 服务商申请的公众号或移动应用appid
 	spMchId         string // 服务商户号
 	subMchId        string // 子商户号
@@ -33,8 +33,8 @@ type WxPay struct {
 	publicKey       string // 请求得到的公钥串　TODO:
 }
 
-func NewWxPay(c WeConfig) *WxPay {
-	var wepay = WxPay{
+func NewWxPay(c WeConfig) *wxPay {
+	var wepay = wxPay{
 		spAppId:         c.SpAppId,
 		spMchId:         c.SpMchId,
 		subAppId:        c.SubAppId,
@@ -49,7 +49,7 @@ func NewWxPay(c WeConfig) *WxPay {
 }
 
 // 获取签名
-func (wepay *WxPay) getSign(method, url, body string) (timeStamp int64, randomStr, signStr, cipherData string) {
+func (wepay *wxPay) getSign(method, url, body string) (timeStamp int64, randomStr, signStr, cipherData string) {
 	timeStamp = time.Now().Unix()
 	randomStr = randString(16)
 	signStr = fmt.Sprintf(signTemplate, method, url, timeStamp, randomStr, body)
@@ -58,7 +58,7 @@ func (wepay *WxPay) getSign(method, url, body string) (timeStamp int64, randomSt
 }
 
 // 执行http操作
-func (wepay *WxPay) doHttpRequest(url, nonceStr, signature, body string, timeStamp int64) ([]byte, error) {
+func (wepay *wxPay) doHttpRequest(url, nonceStr, signature, body string, timeStamp int64) ([]byte, error) {
 	client := http.Client{Timeout: time.Second * 15}
 	var request *http.Request
 	if body != "" {

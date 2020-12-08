@@ -52,7 +52,7 @@ type BizMessage struct {
 // 执行消息反序列化前，必需先调用解密操作
 // 解密操作会校验　appid　是否一致，并截取真实消息体内容
 // 其它各类消息继承自　BizMessage　即可，不用再实现解密操作
-func (biz *BizMessage) DecryptMsg(encryptStr string, mp *Mp) error {
+func (biz *BizMessage) DecryptMsg(encryptStr string, mp *mp) error {
 	cipherData, err := base64.StdEncoding.DecodeString(encryptStr)
 	if err != nil {
 		return err
