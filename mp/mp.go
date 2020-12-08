@@ -24,7 +24,7 @@ const (
 	letterBytes = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 )
 
-type Mp struct {
+type mp struct {
 	token          string
 	encodingaeskey string
 	appid          string
@@ -36,15 +36,15 @@ type Mp struct {
 
 // 实例化一个公众号接口实例，同一服务中只要实例化一个即可
 // accesstoken 会自动刷新，初次调用需要注意先等待accesstoken请求完成
-func NewMp(token, encodingaeskey, appid, appsecret string) *Mp {
-	var mp = Mp{token: token, encodingaeskey: encodingaeskey, appid: appid, appsecret: appsecret}
+func NewMp(token, encodingaeskey, appid, appsecret string) *mp {
+	var mp = mp{token: token, encodingaeskey: encodingaeskey, appid: appid, appsecret: appsecret}
 	mp.initMp()
 	return &mp
 }
 
 // 初始化日志
 // 初始化accessToken调用,使用新线程异步调用
-func (mp *Mp) initMp() {
+func (mp *mp) initMp() {
 	hook := &lumberjack.Logger{
 		Filename:   "./mp.log", // 日志文件路径
 		MaxSize:    500,        // 每个日志文件保存的最大尺寸 单位：M
@@ -57,7 +57,7 @@ func (mp *Mp) initMp() {
 		zapcore.NewMultiWriteSyncer(
 			zapcore.AddSync(os.Stdout),
 			zapcore.AddSync(hook)), // 打印到控制台和文件
-		zap.InfoLevel,              // 日志级别
+		zap.InfoLevel, // 日志级别
 	)
 	logger = zap.New(core)
 	defer logger.Sync()
@@ -67,7 +67,7 @@ func (mp *Mp) initMp() {
 
 // 构建web端config时的参数
 // 需要在前端验证用户权限
-func (mp *Mp) GetJsTicketSignature(url string) (resp JsTicketSignatureResponse) {
+func (mp *mp) GetJsTicketSignature(url string) (resp JsTicketSignatureResponse) {
 	noncestr := randString(16)
 	timestamp := time.Now().Unix()
 	sl := []string{fmt.Sprintf("noncestr=%s", noncestr),
@@ -91,7 +91,7 @@ func (mp *Mp) GetJsTicketSignature(url string) (resp JsTicketSignatureResponse) 
 // @auth
 // @return data TokenResponse "返回结果"
 // @return error error "返回错误"
-func requestAccessToken(mp *Mp) (tokenResponse, error) {
+func requestAccessToken(mp *mp) (tokenResponse, error) {
 	url := fmt.Sprintf("%stoken?grant_type=client_credential&appid=%s&secret=%s", wxApiHost, mp.appid, mp.appsecret)
 	buf, err := utils.DoGet(url)
 	var result tokenResponse
@@ -103,7 +103,7 @@ func requestAccessToken(mp *Mp) (tokenResponse, error) {
 	}
 }
 
-func requestJsTicket(mp *Mp) (result jsTicketResponse, err error) {
+func requestJsTicket(mp *mp) (result jsTicketResponse, err error) {
 	url := fmt.Sprintf("%sticket/getticket?access_token=%s&type=jsapi", wxApiHost, mp.accessToken)
 	var body []byte
 	body, err = utils.DoGet(url)
@@ -115,7 +115,7 @@ func requestJsTicket(mp *Mp) (result jsTicketResponse, err error) {
 	}
 }
 
-func timerTicketToken(mp *Mp) {
+func timerTicketToken(mp *mp) {
 	var result tokenResponse
 	var jsTicketResp jsTicketResponse
 	var err error
@@ -141,6 +141,6 @@ func timerTicketToken(mp *Mp) {
 			continue
 		}
 		mp.jsTicket = jsTicketResp.Ticket
-		time.Sleep(time.Second * 7100)
+		time.Sleep(time.Second * 7200)
 	}
 }

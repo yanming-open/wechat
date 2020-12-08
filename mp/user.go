@@ -39,7 +39,7 @@ type User struct {
 }
 
 // 获取用户信息
-func (this *Mp) GetUserInfo(openid string) (u *User, err error) {
+func (this *mp) GetUserInfo(openid string) (u *User, err error) {
 	url := fmt.Sprintf("%suser/info?access_token=%s&openid=%s&lang=zh_CN", wxApiHost, this.accessToken, openid)
 	buf, err := utils.DoGet(url)
 	if err != nil {
@@ -59,7 +59,7 @@ func (this *Mp) GetUserInfo(openid string) (u *User, err error) {
 }
 
 // 设置用户备注名
-func (m *Mp) UpdateUserRemark(openid, remark string) (err error) {
+func (m *mp) UpdateUserRemark(openid, remark string) (err error) {
 	url := fmt.Sprintf("%suser/info/updateremark?access_token=%s&lang=zh_CN", wxApiHost, m.accessToken)
 	params := utils.KV{}
 	params["openid"] = openid
@@ -82,7 +82,7 @@ func (m *Mp) UpdateUserRemark(openid, remark string) (err error) {
 }
 
 // 获取用户列表
-func (m *Mp) GetUserList(nextOpenId string) (response UserListResponse, err error) {
+func (m *mp) GetUserList(nextOpenId string) (response UserListResponse, err error) {
 	url := fmt.Sprintf("%suser/get?access_token=%s&next_openid=%s", wxApiHost, m.accessToken, nextOpenId)
 	buf, err := utils.DoGet(url)
 	if err != nil {
@@ -103,7 +103,7 @@ func (m *Mp) GetUserList(nextOpenId string) (response UserListResponse, err erro
 }
 
 // 黑名单用户列表
-func (m *Mp) GetBlackUserList(nextOpenId string) (response UserListResponse, err error) {
+func (m *mp) GetBlackUserList(nextOpenId string) (response UserListResponse, err error) {
 	url := fmt.Sprintf("%stags/members/getblacklist?access_token=%s", wxApiHost, m.accessToken)
 	params := utils.KV{}
 	params["begin_openid"] = nextOpenId
@@ -126,7 +126,7 @@ func (m *Mp) GetBlackUserList(nextOpenId string) (response UserListResponse, err
 }
 
 // 批量拉黑用户
-func (m *Mp) BatchBlackUser(openIds []string) (err error) {
+func (m *mp) BatchBlackUser(openIds []string) (err error) {
 	url := fmt.Sprintf("%stags/members/batchblacklist?access_token=%s", wxApiHost, m.accessToken)
 	params := utils.KV{}
 	params["openid_list"] = openIds
@@ -150,7 +150,7 @@ func (m *Mp) BatchBlackUser(openIds []string) (err error) {
 }
 
 // 批量取消拉黑用户
-func (m *Mp) BatchUnBlackUser(openIds []string) (err error) {
+func (m *mp) BatchUnBlackUser(openIds []string) (err error) {
 	url := fmt.Sprintf("%stags/members/batchunblacklist?access_token=%s", wxApiHost, m.accessToken)
 	params := utils.KV{}
 	params["openid_list"] = openIds
@@ -174,7 +174,7 @@ func (m *Mp) BatchUnBlackUser(openIds []string) (err error) {
 }
 
 // 根据公众号前台登陆跳转获取到的code获取accesstoken
-func (m *Mp) GetSnsUserAccessToken(code string) (*AuthCodeResponse, error) {
+func (m *mp) GetSnsUserAccessToken(code string) (*AuthCodeResponse, error) {
 	url := fmt.Sprintf("%soauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code", wxSnsHost, m.appid, m.appsecret, code)
 	body, err := utils.DoGet(url)
 	if err != nil {
@@ -188,7 +188,7 @@ func (m *Mp) GetSnsUserAccessToken(code string) (*AuthCodeResponse, error) {
 
 // 获取Sns用户信息 需scope为 snsapi_userinfo
 // 即网页登陆时必需为非静默授权
-func (m *Mp) GetSnsUserInfo(accessToken, openid string) (u *User, err error) {
+func (m *mp) GetSnsUserInfo(accessToken, openid string) (u *User, err error) {
 	url := fmt.Sprintf("%suserinfo?access_token=%s&openid=%s&lang=zh_CN", wxSnsHost, accessToken, openid)
 	var body []byte
 	body, err = utils.DoGet(url)
@@ -202,7 +202,7 @@ func (m *Mp) GetSnsUserInfo(accessToken, openid string) (u *User, err error) {
 
 // 刷新access_token（如果需要）;
 // 如access_token 过期 调用用户信息时将出错，此时可以刷新access_token,避免用户重复授权
-func (m *Mp) RefreshSnsAccessToken(refreshtoken string) (resp AuthCodeResponse, err error) {
+func (m *mp) RefreshSnsAccessToken(refreshtoken string) (resp AuthCodeResponse, err error) {
 	url := fmt.Sprintf("%soauth2/refresh_token?appid=%s&grant_type=refresh_token&refresh_token=%s", wxSnsHost, m.appid, refreshtoken)
 	var body []byte
 	body, err = utils.DoGet(url)
