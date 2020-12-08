@@ -22,14 +22,27 @@
         * web端code获取access token
         * web端刷新access token
     * 被动消息回复，构建好回复内容后调用 `PassiveReply`方法即可；需要配合 [gin](https://github.com/gin-gonic/gin) 框架
-    * 基本access token 和 JsTicket 每`7100`自动刷新
+    * 基本access token 和 JsTicket 每`7200`秒自动刷新
     
 * 微信支付V3
     * 服务商模式下单、关闭、查询
     * 退款、退款查询
 
 
+# TODO
+
+- [ ] 支付直连商户功能
+- [ ] 支付数据提交加密
+- [ ] 多级struct使用`required`验证时json序列化问题
+
 # ChangeLog
+
+## v1.1.0
+
+* 增加微信支付api v3版本接口
+* 支持服务商模式下单、订单关闭、查询
+* 退款、退款查询
+* 帐单下载
 
 ## v1.0.0
 
